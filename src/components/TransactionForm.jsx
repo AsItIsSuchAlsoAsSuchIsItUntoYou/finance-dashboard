@@ -1,18 +1,28 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { v4 as uuidv4 } from "uuid"
 
 const CATEGORIES = ["Food", "Rent", "Transport", "Entertainment", "Health", "Income", "Other"]
 
-export default function TransactionForm({ onAdd }) {
-  const [form, setForm] = useState({
-    description: "",
-    amount: "",
-    category: "Food",
-    type: "expense",
-    date: new Date().toISOString().split("T")[0]
-  })
+const emptyForm = {
+  description: "",
+  amount: "",
+  category: "Food",
+  type: "expense",
+  date: new Date().toISOString().split("T")[0]
+}
 
+export default function TransactionForm({ onAdd, onEdit, editingTransaction, onCancelEdit }) {
+  const [form, setForm] = useState(emptyForm)
   const [errors, setErrors] = useState({})
+
+  useEffect(() => {
+    if (editingTransaction) {
+      setForm(editingTransaction)
+      setErrors({})
+    } else {
+      setForm(emptyForm)
+    }
+  }, [editingTransaction])
 
   function handleChange(e) {
     setForm({ ...form, [e.target.name]: e.target.value })
@@ -36,9 +46,19 @@ export default function TransactionForm({ onAdd }) {
       setErrors(newErrors)
       return
     }
-    onAdd({ ...form, id: uuidv4(), amount: parseFloat(form.amount) })
-    setForm({ ...form, description: "", amount: "" })
+    if (editingTransaction) {
+      onEdit({ ...form, amount: parseFloat(form.amount) })
+    } else {
+      onAdd({ ...form, id: uuidv4(), amount: parseFloat(form.amount) })
+    }
+    setForm(emptyForm)
     setErrors({})
+  }
+
+  function handleCancel() {
+    setForm(emptyForm)
+    setErrors({})
+    onCancelEdit()
   }
 
   const inputClass = (field) =>
@@ -46,7 +66,9 @@ export default function TransactionForm({ onAdd }) {
 
   return (
     <div className="bg-gray-900 rounded-2xl p-6 border border-gray-800">
-      <h2 className="text-lg font-semibold text-white mb-4">Add Transaction</h2>
+      <h2 className="text-lg font-semibold text-white mb-4">
+        {editingTransaction ? "Edit Transaction" : "Add Transaction"}
+      </h2>
       <form onSubmit={handleSubmit} className="flex flex-col gap-3">
         <div>
           <input name="description" placeholder="Description" value={form.description} onChange={handleChange} className={inputClass("description")} />
@@ -67,9 +89,16 @@ export default function TransactionForm({ onAdd }) {
           <input name="date" type="date" value={form.date} onChange={handleChange} className={inputClass("date")} />
           {errors.date && <p className="text-red-400 text-xs mt-1">{errors.date}</p>}
         </div>
-        <button type="submit" className="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-medium rounded-lg px-4 py-2 text-sm transition-colors">
-          Add Transaction
-        </button>
+        <div className="flex gap-2">
+          <button type="submit" className="flex-1 bg-indigo-600 hover:bg-indigo-500 text-white font-medium rounded-lg px-4 py-2 text-sm transition-colors">
+            {editingTransaction ? "Save Changes" : "Add Transaction"}
+          </button>
+          {editingTransaction && (
+            <button type="button" onClick={handleCancel} className="flex-1 bg-gray-700 hover:bg-gray-600 text-white font-medium rounded-lg px-4 py-2 text-sm transition-colors">
+              Cancel
+            </button>
+          )}
+        </div>
       </form>
     </div>
   )

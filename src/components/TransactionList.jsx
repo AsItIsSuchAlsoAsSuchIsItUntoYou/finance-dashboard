@@ -2,8 +2,7 @@ import { useState } from "react"
 
 const CATEGORIES = ["All", "Food", "Rent", "Transport", "Entertainment", "Health", "Income", "Other"]
 
-export default function TransactionList({ transactions, onRemove }) {
-  const [filterCategory, setFilterCategory] = useState("All")
+export default function TransactionList({ transactions, onRemove, onEdit }) {  const [filterCategory, setFilterCategory] = useState("All")
   const [filterType, setFilterType] = useState("All")
   const [sortBy, setSortBy] = useState("date-desc")
 
@@ -56,15 +55,21 @@ export default function TransactionList({ transactions, onRemove }) {
               </div>
               <div className="flex items-center gap-4">
                 <span className={`text-sm font-semibold ${t.type === "income" ? "text-emerald-400" : "text-red-400"}`}>
-                  {t.type === "income" ? "+" : "-"}${t.amount.toFixed(2)}
+                    {t.type === "income" ? "+" : "-"}${t.amount.toFixed(2)}
                 </span>
                 <button
-                  onClick={() => onRemove(t.id)}
-                  className="text-gray-600 hover:text-red-400 text-xs transition-colors"
+                    onClick={() => onEdit(t)}
+                    className="text-gray-600 hover:text-indigo-400 text-xs transition-colors"
                 >
-                  Delete
+                    Edit
                 </button>
-              </div>
+                <button
+                    onClick={() => onRemove(t.id)}
+                    className="text-gray-600 hover:text-red-400 text-xs transition-colors"
+                >
+                    Delete
+                </button>
+            </div>
             </li>
           ))}
         </ul>

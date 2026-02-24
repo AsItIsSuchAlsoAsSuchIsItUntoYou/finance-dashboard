@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react"
-import { getTransactions, addTransaction, deleteTransaction } from "../utils/storage"
+import { getTransactions, addTransaction, editTransaction, deleteTransaction } from "../utils/storage"
 
 export default function useTransactions() {
   const [transactions, setTransactions] = useState([])
@@ -13,10 +13,15 @@ export default function useTransactions() {
     setTransactions(updated)
   }
 
+  function edit(transaction) {
+    const updated = editTransaction(transaction)
+    setTransactions(updated)
+  }
+
   function remove(id) {
     const updated = deleteTransaction(id)
     setTransactions(updated)
   }
 
-  return { transactions, add, remove }
+  return { transactions, add, edit, remove }
 }

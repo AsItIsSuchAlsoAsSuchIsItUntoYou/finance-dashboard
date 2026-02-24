@@ -26,6 +26,13 @@ export function addTransaction(transaction) {
   return updated
 }
 
+export function editTransaction(updatedTransaction) {
+  const transactions = getTransactions()
+  const updated = transactions.map(t => t.id === updatedTransaction.id ? updatedTransaction : t)
+  saveTransactions(updated)
+  return updated
+}
+
 export function deleteTransaction(id) {
   const transactions = getTransactions()
   const updated = transactions.filter(t => t.id !== id)
