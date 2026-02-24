@@ -39,3 +39,24 @@ export function deleteTransaction(id) {
   saveTransactions(updated)
   return updated
 }
+
+export function exportToCSV(transactions) {
+  const headers = ["Date", "Description", "Category", "Type", "Amount"]
+  const rows = transactions.map(t => [
+    t.date,
+    `"${t.description.replace(/"/g, '""')}"`,
+    t.category,
+    t.type,
+    t.amount.toFixed(2)
+  ])
+
+  const csv = [headers, ...rows].map(row => row.join(",")).join("\n")
+  const blob = new Blob([csv], { type: "text/csv" })
+  const url = URL.createObjectURL(blob)
+
+  const a = document.createElement("a")
+  a.href = url
+  a.download = `transactions-${new Date().toISOString().split("T")[0]}.csv`
+  a.click()
+  URL.revokeObjectURL(url)
+}

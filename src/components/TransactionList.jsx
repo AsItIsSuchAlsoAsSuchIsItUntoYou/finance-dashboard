@@ -1,4 +1,5 @@
 import { useState } from "react"
+import { exportToCSV } from "../utils/storage"
 
 const CATEGORIES = ["All", "Food", "Rent", "Transport", "Entertainment", "Health", "Income", "Other"]
 
@@ -24,22 +25,29 @@ export default function TransactionList({ transactions, onRemove, onEdit }) {  c
       <div className="flex flex-wrap items-center justify-between gap-3 px-6 py-4 border-b border-gray-800">
         <h2 className="text-lg font-semibold text-white">Transactions</h2>
         <div className="flex flex-wrap gap-2">
-          <select value={filterType} onChange={(e) => setFilterType(e.target.value)} className={selectClass}>
+            <select value={filterType} onChange={(e) => setFilterType(e.target.value)} className={selectClass}>
             <option value="All">All Types</option>
             <option value="income">Income</option>
             <option value="expense">Expense</option>
-          </select>
-          <select value={filterCategory} onChange={(e) => setFilterCategory(e.target.value)} className={selectClass}>
+            </select>
+            <select value={filterCategory} onChange={(e) => setFilterCategory(e.target.value)} className={selectClass}>
             {CATEGORIES.map(c => <option key={c}>{c}</option>)}
-          </select>
-          <select value={sortBy} onChange={(e) => setSortBy(e.target.value)} className={selectClass}>
+            </select>
+            <select value={sortBy} onChange={(e) => setSortBy(e.target.value)} className={selectClass}>
             <option value="date-desc">Newest First</option>
             <option value="date-asc">Oldest First</option>
             <option value="amount-desc">Highest Amount</option>
             <option value="amount-asc">Lowest Amount</option>
-          </select>
+            </select>
+            <button
+            onClick={() => exportToCSV(filtered)}
+            disabled={filtered.length === 0}
+            className="bg-gray-800 border border-gray-700 text-gray-100 rounded-lg px-3 py-1.5 text-sm hover:border-indigo-500 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+            >
+            Export CSV
+            </button>
         </div>
-      </div>
+        </div>
 
       {filtered.length === 0 ? (
         <p className="text-gray-500 text-sm text-center py-6">
