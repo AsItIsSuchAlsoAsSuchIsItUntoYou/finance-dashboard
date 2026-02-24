@@ -8,12 +8,16 @@ export default function Dashboard() {
   const { transactions, add, remove } = useTransactions()
 
   return (
-    <div>
-      <h1>Finance Dashboard</h1>
+    <div className="max-w-4xl mx-auto px-4 py-10">
+      <h1 className="text-3xl font-bold text-white mb-8">Finance Dashboard</h1>
       <SummaryCards transactions={transactions} />
-      <TransactionForm onAdd={add} />
-      <SpendingChart transactions={transactions} />
-      <TransactionList transactions={transactions} onRemove={remove} />
+      <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
+        <TransactionForm onAdd={add} />
+        <SpendingChart transactions={transactions} />
+      </div>
+      <div className="mt-8">
+        <TransactionList transactions={transactions} onRemove={remove} />
+      </div>
     </div>
   )
 }
