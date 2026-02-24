@@ -3,6 +3,7 @@ import TransactionForm from "../components/TransactionForm"
 import TransactionList from "../components/TransactionList"
 import SummaryCards from "../components/SummaryCards"
 import SpendingChart from "../components/SpendingChart"
+import MonthlyChart from "../components/MonthlyChart"
 
 export default function Dashboard() {
   const { transactions, add, remove } = useTransactions()
@@ -15,7 +16,10 @@ export default function Dashboard() {
         <TransactionForm onAdd={add} />
         <SpendingChart transactions={transactions} />
       </div>
-      <div className="mt-8">
+      <div className="mt-6">
+        <MonthlyChart transactions={transactions} />
+      </div>
+      <div className="mt-6">
         <TransactionList transactions={transactions} onRemove={remove} />
       </div>
     </div>
